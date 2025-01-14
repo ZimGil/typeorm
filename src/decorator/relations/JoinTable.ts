@@ -30,7 +30,7 @@ export function JoinTable(
 export function JoinTable(
     options?: JoinTableOptions | JoinTableMultipleColumnsOptions,
 ): PropertyDecorator {
-    return function (object: Object, propertyName: string) {
+    return function (object: object, propertyName: string) {
         options =
             options ||
             ({} as JoinTableOptions | JoinTableMultipleColumnsOptions)
@@ -51,6 +51,7 @@ export function JoinTable(
             database:
                 options && options.database ? options.database : undefined,
             synchronize: !(options && options.synchronize === false),
+            additionalGeneratedColumns: options.additionalGeneratedColumns,
         } as JoinTableMetadataArgs)
     }
 }

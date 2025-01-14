@@ -1,4 +1,5 @@
 import { JoinColumnMetadataArgs } from "./JoinColumnMetadataArgs"
+import { JoinTableAdditionalGeneratedColumnsArgs } from "./JoinTableAdditionalGeneratedColumnsArgs"
 
 /**
  * Arguments for JoinTableMetadata class.
@@ -48,4 +49,7 @@ export interface JoinTableMetadataArgs {
      * By default schema synchronization is enabled.
      */
     readonly synchronize?: boolean
+
+    readonly additionalGeneratedColumns?: JoinTableAdditionalGeneratedColumnsArgs[]
+
 }

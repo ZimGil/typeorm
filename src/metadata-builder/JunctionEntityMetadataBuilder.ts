@@ -64,6 +64,8 @@ export class JunctionEntityMetadataBuilder {
         })
         entityMetadata.build()
 
+        const areJunctionColumnsPrimary = joinTable.additionalGeneratedColumns ? !joinTable.additionalGeneratedColumns.some(({isPrimary}) => isPrimary) : true
+
         // create original side junction columns
         const junctionColumns = referencedColumns.map((referencedColumn) => {
             const joinColumn = joinTable.joinColumns
@@ -125,7 +127,7 @@ export class JunctionEntityMetadataBuilder {
                         foreignKeyConstraintName:
                             joinColumn?.foreignKeyConstraintName,
                         nullable: false,
-                        primary: true,
+                        primary: areJunctionColumnsPrimary,
                     },
                 },
             })
@@ -195,12 +197,29 @@ export class JunctionEntityMetadataBuilder {
                                 joinColumn?.foreignKeyConstraintName,
                             name: columnName,
                             nullable: false,
-                            primary: true,
+                            primary: areJunctionColumnsPrimary,
                         },
                     },
                 })
             },
         )
+
+        const additionalColumns = joinTable.additionalGeneratedColumns?.map(({name, generationStrategy, isPrimary}) => {
+            return new ColumnMetadata({
+                connection: this.connection,
+                entityMetadata: entityMetadata,
+                args: {
+                    target: "",
+                    mode: "virtual",
+                    propertyName: name,
+                    options: {
+                        name,
+                        generated: generationStrategy ?? "increment",
+                        primary: isPrimary ?? false,
+                    },
+                },
+            })
+        }) ?? []
 
         this.changeDuplicatedColumnNames(
             junctionColumns,
@@ -213,6 +232,7 @@ export class JunctionEntityMetadataBuilder {
         entityMetadata.ownColumns = [
             ...junctionColumns,
             ...inverseJunctionColumns,
+            ...additionalColumns
         ]
         entityMetadata.ownColumns.forEach(
             (column) => (column.relationMetadata = relation),

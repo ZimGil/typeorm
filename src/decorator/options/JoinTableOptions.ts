@@ -1,4 +1,5 @@
 import { JoinColumnOptions } from "./JoinColumnOptions"
+import { JoinTableAdditionalGeneratedColumnsOptions } from "./JoinTableAdditionalGeneratedColumnsOptions"
 
 /**
  * Describes join table options.
@@ -38,4 +39,6 @@ export interface JoinTableOptions {
      * By default schema synchronization is enabled.
      */
     synchronize?: boolean
+
+    readonly additionalGeneratedColumns?: JoinTableAdditionalGeneratedColumnsOptions[]
 }
